@@ -205,7 +205,7 @@ footer a{color:inherit}
 <!-- MAP -->
 <section id="map">
   <h2>3. 근육 지도: 위치와 결 방향</h2>
-  <p class="lead">근육을 누르면 결을 따라 줄무늬가 <b style="color:var(--o)">이는곳</b>에서 <b style="color:var(--i)">닿는곳</b>으로 흘러요. 그림은 개의 왼쪽 옆모습이고, 머리가 오른쪽이에요.</p>
+  <p class="lead">근육을 누르면 결을 따라 줄무늬가 <b style="color:var(--o)">이는곳</b>에서 <b style="color:var(--i)">닿는곳</b>으로 흘러요. 그림은 개의 오른쪽 옆모습이에요(머리가 오른쪽).</p>
   <div>
     <div>
       <div class="fig" id="mapFig"></div>
@@ -365,7 +365,7 @@ const lerp=(a,b,t)=>[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t];
 // ---------- figure builder ----------
 function buildFig(host,opt={}){
   host.innerHTML='';
-  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':'개 왼쪽 옆모습 겉근육 그림'},host);
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':'개 오른쪽 옆모습 겉근육 그림'},host);
   const defs=el('defs',{},svg);
   ['o','i'].forEach(k=>{});
   const mk=el('marker',{id:host.id+'ar',viewBox:'0 0 10 10',refX:6,refY:5,markerWidth:4,markerHeight:4,orient:'auto-start-reverse'},defs);
