@@ -97,6 +97,7 @@ h2{font-size:22px;margin:6px 0 4px;letter-spacing:-.3px}
 .bar i{display:block;height:100%;background:var(--ink);width:0;transition:width .3s}
 .big{font-size:44px;font-weight:900;margin:6px 0}
 /* body */
+.bcard.wide{grid-column:1/-1}
 .bcard.done{border-color:var(--ok);background:#f3fbf6}
 .bcard h3{margin:0 0 8px;font-size:21px;display:flex;align-items:center;gap:8px}
 .bcard h3 i{width:14px;height:14px;border-radius:50%;flex:0 0 auto}
@@ -253,7 +254,7 @@ footer a{color:inherit}
     <b id="bodyCount"></b>
     <button class="btn sm ghost" id="bodyReset">처음부터</button>
   </div>
-  <div class="tcards" id="bcards"></div>
+  <div class="tcards" id="bcards" style="grid-auto-flow:dense"></div>
 </section>
 
 <!-- FIND -->
@@ -461,18 +462,33 @@ const BODY=[
  {id:'bif',where:'넓적다리 뒤 바깥쪽',how:'의자에 앉아 손을 넓적다리 뒤 바깥쪽에 대고, 발꿈치로 바닥을 의자 쪽으로 끌어당기듯 눌러요.',feel:'넓적다리 뒤가 단단해지고, 무릎 뒤 바깥쪽에 굵은 힘줄이 만져져요.',dog:'개 것은 훨씬 넓어서 넓적다리 바깥쪽을 거의 다 덮고, 발꿈치까지 이어져요.'},
  {id:'brce',where:'사람에게는 한 근육으로 없어요. 비슷한 자리는 빗장뼈 바로 아래 어깨 앞쪽',how:'반대 손을 어깨 앞쪽에 얹고, 팔을 앞으로 쭉 뻗어 들어요.',feel:'어깨 앞쪽이 단단해져요.',dog:'개는 빗장뼈가 거의 없어서, 머리·목에서 위팔까지 한 근육으로 길게 이어져요. 그래서 걸을 때 앞다리를 앞으로 내밀어요.'}
 ];
-const bodyDone=new Set();
+const bodyDone=new Set();let bodyOpen=null;
 function bodyRender(){
-  $('#bcards').innerHTML=BODY.map(b=>{const m=byId[b.id];const d=bodyDone.has(b.id);return `<div class="tcard bcard${d?' done':''}">
+  bodyOpen=null;
+  $('#bcards').innerHTML=BODY.map(b=>{const m=byId[b.id];return `<div class="tcard bcard" data-card="${b.id}">
   <h3><i style="background:${m.color}"></i>${m.ko}</h3>
   <dl><dt>어디</dt><dd>${b.where}</dd><dt>해 보기</dt><dd>${b.how}</dd><dt>느낌</dt><dd>${b.feel}</dd><dt>개는?</dt><dd>${b.dog}</dd></dl>
-  <div class="row"><button class="btn sm ghost chk${d?' on':''}" data-done="${b.id}">${d?'✓ 느꼈어요':'느꼈어요'}</button><button class="btn sm ghost" data-see="${b.id}">개 그림에서 보기</button></div></div>`}).join('');
+  <div class="row"><button class="btn sm ghost chk" data-done="${b.id}">느꼈어요</button><button class="btn sm ghost" data-see="${b.id}">개 그림에서 보기</button></div>
+  <div class="fig" id="bfig${b.id}" style="display:none;margin-top:10px"></div></div>`}).join('');
+  bodyMark();
+}
+function bodyMark(){
+  BODY.forEach(b=>{const d=bodyDone.has(b.id),c=$(`[data-card="${b.id}"]`),k=$(`[data-done="${b.id}"]`);
+    c.classList.toggle('done',d);k.classList.toggle('on',d);k.textContent=d?'✓ 느꼈어요':'느꼈어요'});
   $('#bodyCount').textContent=`느낀 근육 ${bodyDone.size} / ${BODY.length}`;
+}
+function bodyShow(id){
+  if(bodyOpen){$('#bfig'+bodyOpen).style.display='none';$('#bfig'+bodyOpen).innerHTML='';$(`[data-see="${bodyOpen}"]`).textContent='개 그림에서 보기';$(`[data-card="${bodyOpen}"]`).classList.remove('wide')}
+  if(bodyOpen===id){bodyOpen=null;return}
+  bodyOpen=id;$(`[data-card="${id}"]`).classList.add('wide');const host=$('#bfig'+id);host.style.display='block';
+  const F=buildFig(host);setLook(F,'focus',id);drawFibers(F,byId[id]);
+  $(`[data-see="${id}"]`).textContent='그림 닫기';
+  host.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 $('#bcards').onclick=e=>{
   const d=e.target.closest('[data-done]'),v=e.target.closest('[data-see]');
-  if(d){const id=d.dataset.done;bodyDone.has(id)?bodyDone.delete(id):bodyDone.add(id);bodyRender()}
-  if(v){go('map');selectM(M.findIndex(m=>m.id===v.dataset.see))}
+  if(d){const id=d.dataset.done;bodyDone.has(id)?bodyDone.delete(id):bodyDone.add(id);bodyMark()}
+  if(v)bodyShow(v.dataset.see);
 };
 $('#bodyReset').onclick=()=>{bodyDone.clear();bodyRender()};
 bodyRender();
