@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>개 근육 첫걸음</title>
-<meta name="description" content="반려동물과 학생을 위한 개 겉근육 8개: 이름 풀기, 위치와 결 방향, 찾기 게임, 퀴즈">
+<meta name="description" content="반려동물과 학생을 위한 개 겉근육 8개: 이름 풀기, 위치와 결 방향, 내 몸에서 찾기, 찾기 게임, 퀴즈">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.min.css">
 <style>
 :root{
@@ -96,6 +96,15 @@ h2{font-size:22px;margin:6px 0 4px;letter-spacing:-.3px}
 .bar{height:8px;background:var(--chip);border-radius:99px;overflow:hidden;margin:6px 0 12px}
 .bar i{display:block;height:100%;background:var(--ink);width:0;transition:width .3s}
 .big{font-size:44px;font-weight:900;margin:6px 0}
+/* body */
+.bcard.done{border-color:var(--ok);background:#f3fbf6}
+.bcard h3{margin:0 0 8px;font-size:21px;display:flex;align-items:center;gap:8px}
+.bcard h3 i{width:14px;height:14px;border-radius:50%;flex:0 0 auto}
+.bcard dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 10px;font-size:15.5px;line-height:1.5}
+.bcard dt{font-weight:800;white-space:nowrap}
+.bcard dd{margin:0}
+.bcard .row{margin-top:10px}
+.bcard .chk.on{background:var(--ok);color:#fff}
 /* flash */
 .flash{min-height:230px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;cursor:pointer;user-select:none}
 .flash .q{font-size:26px;font-weight:800}
@@ -116,8 +125,9 @@ footer a{color:inherit}
     <button data-t="basic"><small>1</small>기초</button>
     <button data-t="term"><small>2</small>이름 풀기</button>
     <button data-t="map"><small>3</small>근육 지도</button>
-    <button data-t="find"><small>4</small>찾기 게임</button>
-    <button data-t="quiz"><small>5</small>퀴즈</button>
+    <button data-t="body"><small>4</small>내 몸에서</button>
+    <button data-t="find"><small>5</small>찾기 게임</button>
+    <button data-t="quiz"><small>6</small>퀴즈</button>
     <button data-t="flash">복습 카드</button>
   </nav>
 </header>
@@ -126,14 +136,15 @@ footer a{color:inherit}
 <!-- HOME -->
 <section id="home" class="on">
   <h2>오늘은 개의 겉근육 8개</h2>
-  <p class="lead">한 번에 많이 외우지 않아요. 같은 8개를 <b>이름 → 그림 → 게임 → 퀴즈</b>로 네 번 만나요.</p>
+  <p class="lead">한 번에 많이 외우지 않아요. 같은 8개를 <b>이름 → 그림 → 내 몸 → 게임 → 퀴즈</b>로 다섯 번 만나요.</p>
   <div class="card">
     <ol class="plan">
       <li><b class="min">10분</b><div><b>1. 기초</b><br>방향 말(머리쪽·꼬리쪽·등쪽·배쪽…)과 이는곳·닿는곳</div></li>
       <li><b class="min">15분</b><div><b>2. 이름 풀기</b><br>영어 이름을 조각으로 쪼개면 한글 이름이 보여요</div></li>
-      <li><b class="min">25분</b><div><b>3. 근육 지도</b><br>그림에서 위치와 결 방향 보기, 하나씩 세 바퀴</div></li>
-      <li><b class="min">10분</b><div><b>4. 찾기 게임</b><br>이름을 듣고 그림에서 눌러 찾기</div></li>
-      <li><b class="min">10분</b><div><b>5. 퀴즈</b><br>10문제, 틀린 것만 다시</div></li>
+      <li><b class="min">20분</b><div><b>3. 근육 지도</b><br>그림에서 위치와 결 방향 보기, 하나씩 세 바퀴</div></li>
+      <li><b class="min">10분</b><div><b>4. 내 몸에서 찾기</b><br>내 몸의 같은 근육에 손을 얹고 움직여 보기</div></li>
+      <li><b class="min">10분</b><div><b>5. 찾기 게임</b><br>이름을 듣고 그림에서 눌러 찾기</div></li>
+      <li><b class="min">10분</b><div><b>6. 퀴즈</b><br>10문제, 틀린 것만 다시</div></li>
       <li><b class="min">집에서</b><div><b>복습 카드</b><br>눌러서 뒤집는 카드, 하루 두 번</div></li>
     </ol>
   </div>
@@ -229,9 +240,25 @@ footer a{color:inherit}
   </div>
 </section>
 
+<!-- BODY -->
+<section id="body">
+  <h2>4. 내 몸에서 찾기</h2>
+  <p class="lead">사람에게도 거의 같은 자리에 같은 근육이 있어요. 손을 얹고 움직이면 근육이 <b>단단해지는 것</b>이 느껴져요. 그게 근육이 줄어드는 (수축하는) 순간이에요.</p>
+  <div class="card">
+    <b>이렇게 해요</b>
+    <div style="margin-top:6px;font-size:16px;line-height:1.7">1) 손을 얹어요 → 2) 말한 대로 움직여요 → 3) 단단해지는지 느껴요 → 4) 개 그림에서 같은 자리를 찾아요</div>
+    <div class="note">내 몸으로 먼저 해요. 짝과 할 때는 옷 위로, 서로 괜찮은지 묻고 해요. 아프거나 다친 곳은 하지 않아요.</div>
+  </div>
+  <div class="row" style="justify-content:space-between;margin-bottom:10px">
+    <b id="bodyCount"></b>
+    <button class="btn sm ghost" id="bodyReset">처음부터</button>
+  </div>
+  <div class="tcards" id="bcards"></div>
+</section>
+
 <!-- FIND -->
 <section id="find">
-  <h2>4. 찾기 게임</h2>
+  <h2>5. 찾기 게임</h2>
   <p class="lead">이름을 보고 그림에서 그 근육을 눌러요. 처음엔 색이 보이고, 두 번째 판부터는 색이 사라져요.</p>
   <div class="card">
     <div class="row" style="justify-content:space-between">
@@ -250,7 +277,7 @@ footer a{color:inherit}
 
 <!-- QUIZ -->
 <section id="quiz">
-  <h2>5. 퀴즈 10문제</h2>
+  <h2>6. 퀴즈 10문제</h2>
   <div class="card" id="quizBox"></div>
 </section>
 
@@ -422,6 +449,33 @@ function drawLabels(F,ids){
   F.gL.innerHTML='';
   ids.forEach(id=>{const m=byId[id];const t=el('text',{x:m.lp[0],y:m.lp[1],fill:m.color,class:'lbl'},F.gL);t.textContent=m.ko});
 }
+
+// ---------- body: find on my own body ----------
+const BODY=[
+ {id:'delt',where:'어깨 끝 둥근 살',how:'반대 손을 어깨 끝에 얹고, 팔을 옆으로 어깨 높이까지 들어요.',feel:'손 밑 살이 단단하게 부풀어요.',dog:'개는 다리를 옆으로 거의 들지 않아요. 개의 어깨세모근은 주로 어깨관절을 굽혀요.'},
+ {id:'tri',where:'위팔 뒤쪽',how:'반대 손으로 위팔 뒤쪽을 잡고, 손바닥으로 책상을 꾹 누르며 팔꿈치를 쭉 펴요.',feel:'잡은 살이 딱딱해지고, 팔꿈치 끝 쪽으로 힘줄이 느껴져요.',dog:'하는 일이 같아요. 개는 서 있는 동안 이 근육이 팔꿈치를 펴서 몸무게를 받쳐요.'},
+ {id:'trap',where:'목과 어깨 사이 윗부분',how:'반대 손을 목과 어깨 사이에 얹고, 어깨를 귀 쪽으로 으쓱 올려요.',feel:'손 밑 근육이 위로 불룩 올라와요.',dog:'하는 일이 같아요 (어깨뼈를 등쪽으로 올림). 사람 것은 뒤통수까지 올라가요.'},
+ {id:'lat',where:'겨드랑이 뒤쪽 살',how:'엄지는 겨드랑이 안에, 나머지 손가락은 뒤쪽 살에 두고 잡아요. 의자에 앉아 양손으로 의자 바닥을 아래로 꾹 눌러요.',feel:'잡은 살이 두꺼워지고 단단해져요.',dog:'개는 이 근육으로 앞다리를 뒤로 당겨 땅을 밀고, 몸을 앞으로 보내요.'},
+ {id:'obl',where:'옆구리, 갈비뼈 아래',how:'손바닥을 옆구리에 대고 기침을 하거나 "흡!" 하고 배에 힘을 줘요.',feel:'옆구리가 단단해져요. 손을 바지 앞주머니에 넣는 방향이 이 근육의 결 방향이에요.',dog:'하는 일이 같아요. 배를 조여 숨을 내쉬고, 배변·분만을 도와요.'},
+ {id:'glm',where:'엉덩이 옆 위쪽, 골반뼈 바로 아래',how:'양손을 그 자리에 얹고, 한 발을 들어 한 발로 서요.',feel:'디딘 쪽 엉덩이 옆이 단단해져요.',dog:'사람은 한 발로 설 때 골반을 받쳐요. 개는 엉덩관절을 펴서 몸을 앞으로 밀고, 볼기근 가운데 가장 커요.'},
+ {id:'bif',where:'넓적다리 뒤 바깥쪽',how:'의자에 앉아 손을 넓적다리 뒤 바깥쪽에 대고, 발꿈치로 바닥을 의자 쪽으로 끌어당기듯 눌러요.',feel:'넓적다리 뒤가 단단해지고, 무릎 뒤 바깥쪽에 굵은 힘줄이 만져져요.',dog:'개 것은 훨씬 넓어서 넓적다리 바깥쪽을 거의 다 덮고, 발꿈치까지 이어져요.'},
+ {id:'brce',where:'사람에게는 한 근육으로 없어요. 비슷한 자리는 빗장뼈 바로 아래 어깨 앞쪽',how:'반대 손을 어깨 앞쪽에 얹고, 팔을 앞으로 쭉 뻗어 들어요.',feel:'어깨 앞쪽이 단단해져요.',dog:'개는 빗장뼈가 거의 없어서, 머리·목에서 위팔까지 한 근육으로 길게 이어져요. 그래서 걸을 때 앞다리를 앞으로 내밀어요.'}
+];
+const bodyDone=new Set();
+function bodyRender(){
+  $('#bcards').innerHTML=BODY.map(b=>{const m=byId[b.id];const d=bodyDone.has(b.id);return `<div class="tcard bcard${d?' done':''}">
+  <h3><i style="background:${m.color}"></i>${m.ko}</h3>
+  <dl><dt>어디</dt><dd>${b.where}</dd><dt>해 보기</dt><dd>${b.how}</dd><dt>느낌</dt><dd>${b.feel}</dd><dt>개는?</dt><dd>${b.dog}</dd></dl>
+  <div class="row"><button class="btn sm ghost chk${d?' on':''}" data-done="${b.id}">${d?'✓ 느꼈어요':'느꼈어요'}</button><button class="btn sm ghost" data-see="${b.id}">개 그림에서 보기</button></div></div>`}).join('');
+  $('#bodyCount').textContent=`느낀 근육 ${bodyDone.size} / ${BODY.length}`;
+}
+$('#bcards').onclick=e=>{
+  const d=e.target.closest('[data-done]'),v=e.target.closest('[data-see]');
+  if(d){const id=d.dataset.done;bodyDone.has(id)?bodyDone.delete(id):bodyDone.add(id);bodyRender()}
+  if(v){go('map');selectM(M.findIndex(m=>m.id===v.dataset.see))}
+};
+$('#bodyReset').onclick=()=>{bodyDone.clear();bodyRender()};
+bodyRender();
 
 // ---------- nav ----------
 const tabs=[...document.querySelectorAll('#nav button')];
