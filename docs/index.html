@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>개 근육 교실</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E🐕%3C/text%3E%3C/svg%3E">
 <meta name="description" content="반려동물과 학생을 위한 개 근육 수업: 레벨 1~5, 이름 풀기, 위치와 결 방향, 내 몸에서 찾기, 찾기 게임, 퀴즈">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.min.css">
 <style>
@@ -33,6 +34,7 @@ h2{font-size:22px;margin:6px 0 4px;letter-spacing:-.3px}
 @media(min-width:860px){.grid2{grid-template-columns:1.35fr 1fr}}
 .btn{border:0;border-radius:12px;padding:12px 16px;font:inherit;font-size:16px;font-weight:700;cursor:pointer;background:var(--ink);color:#fff}
 .btn.ghost{background:var(--chip);color:var(--ink)}
+.btn.ghost.on{background:var(--ink);color:#fff}
 .btn.sm{padding:8px 12px;font-size:14px;border-radius:10px}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .plan{list-style:none;padding:0;margin:0;counter-reset:s}
@@ -53,8 +55,9 @@ h2{font-size:22px;margin:6px 0 4px;letter-spacing:-.3px}
 .pull{animation:pull 1.2s ease-in-out infinite}
 @keyframes pull{0%,100%{opacity:.15}50%{opacity:1}}
 .fig svg{--u:1}
-.mk text{font-weight:800;font-size:calc(30px * var(--u));paint-order:stroke;stroke:#fff;stroke-width:calc(8px * var(--u))}
-.lbl{font-weight:800;font-size:calc(34px * var(--u));paint-order:stroke;stroke:#fff;stroke-width:calc(9px * var(--u));pointer-events:none}
+.fig svg{--tk:var(--u)}
+.mk text{font-weight:800;font-size:calc(30px * var(--tk));paint-order:stroke;stroke:#fff;stroke-width:calc(8px * var(--tk))}
+.lbl{font-weight:800;font-size:calc(34px * var(--tk));paint-order:stroke;stroke:#fff;stroke-width:calc(9px * var(--tk));pointer-events:none}
 .fig.tall svg{max-height:82vh;width:auto;max-width:100%;margin:0 auto}
 @media(max-width:700px){.fig.tall svg{max-height:none;width:100%}}
 .lvpick{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:4px 0 14px}
@@ -123,7 +126,8 @@ h2{font-size:22px;margin:6px 0 4px;letter-spacing:-.3px}
 .flash.open .a{display:block}
 /* lever */
 .lever svg{width:100%;max-width:520px;display:block;margin:0 auto}
-.dir text{font-weight:800;font-size:40px;paint-order:stroke;stroke:#fff;stroke-width:10px}
+.dir text{font-weight:800;font-size:max(40px,calc(22px * var(--tk,1)));paint-order:stroke;stroke:#fff;stroke-width:max(10px,calc(6px * var(--tk,1)))}
+#find .card>.row:first-child{position:sticky;top:96px;z-index:6;background:var(--card);margin:-6px -6px 4px;padding:6px}
 footer{max-width:1100px;margin:0 auto;padding:0 16px 30px;color:var(--sub);font-size:12.5px;line-height:1.6}
 footer a{color:inherit}
 </style>

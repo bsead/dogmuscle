@@ -26,11 +26,19 @@ const byId=Object.fromEntries(M.map(m=>[m.id,m]));
 const NM=M.length;
 
 // ---------- figure ----------
+// 화면 폭에 맞춰 글자·점·결 줄 굵기를 키운다 (폰에서 너무 작지 않게)
+function fitSvg(svg){
+  const W=+svg.dataset.w,u=+svg.dataset.u||1,w=svg.getBoundingClientRect().width;
+  if(!W||!w)return u;
+  const ppu=w/W,tk=Math.max(u,12.5/(30*ppu)),fu=Math.max(u,2.2/(5*ppu));
+  svg.style.setProperty('--tk',tk);svg.style.setProperty('--u',fu);return tk;
+}
+function fitIn(root){(root||document).querySelectorAll('svg[data-w]').forEach(fitSvg)}
 let figSeq=0;
 function buildFig(host,fk){
   const F=FIGS[fk],u=Math.max(F.W,F.H)/2010,id='f'+(++figSeq);
   host.innerHTML='';host.classList.toggle('tall',!!F.tall);
-  const svg=el('svg',{viewBox:`0 0 ${F.W} ${F.H}`,role:'img','aria-label':F.alt},host);
+  const svg=el('svg',{viewBox:`0 0 ${F.W} ${F.H}`,role:'img','aria-label':F.alt,'data-w':F.W,'data-u':u},host);
   svg.style.setProperty('--u',u);
   const defs=el('defs',{},svg);
   const mk2=el('marker',{id:id+'pull',viewBox:'0 0 10 10',refX:6,refY:5,markerWidth:3.2,markerHeight:3.2,orient:'auto'},defs);
@@ -47,7 +55,7 @@ function buildFig(host,fk){
 }
 function drawFibers(F,m,pull){
   F.gF.innerHTML='';F.gK.innerHTML='';
-  if(!m||!F.shapes[m.id])return;const u=F.u;
+  if(!m||!F.shapes[m.id])return;const u=fitSvg(F.svg);
   const g=el('g',{'clip-path':`url(#${F.id}c${m.id})`},F.gF);
   for(let k=0;k<m.n;k++){
     const t=m.n==1?.5:k/(m.n-1),a=lerp(m.fa[0],m.fa[1],t),b=lerp(m.fb[0],m.fb[1],t);
@@ -57,10 +65,11 @@ function drawFibers(F,m,pull){
   [[o,'#1f9d55','이는곳'],[i,'#d1495b','닿는곳']].forEach(([p,c,txt],idx)=>{
     const gg=el('g',{class:'mk'},F.gK);
     el('circle',{cx:p[0],cy:p[1],r:17*u,fill:c,stroke:'#fff','stroke-width':6*u},gg);
-    const t=el('text',{x:p[0]+(idx?-26:26)*u,y:p[1]-24*u,fill:c,'text-anchor':idx?'end':'start'},gg);t.textContent=txt;
+    const q=idx?o:i,left=p[0]<q[0];
+    const t=el('text',{x:p[0]+(left?-26:26)*u,y:p[1]-24*u,fill:c,'text-anchor':left?'end':'start'},gg);t.textContent=txt;
   });
   if(pull){
-    const v=[o[0]-i[0],o[1]-i[1]],Ln=Math.hypot(...v),w=[v[0]/Ln,v[1]/Ln],len=Math.min(Ln*.55,260*u);
+    const v=[o[0]-i[0],o[1]-i[1]],Ln=Math.hypot(...v),w=[v[0]/Ln,v[1]/Ln],len=Math.min(Ln*.55,Math.max(260*F.u,80*u));
     const s=[i[0]+w[0]*30*u,i[1]+w[1]*30*u],e=[i[0]+w[0]*len,i[1]+w[1]*len];
     const gp=el('g',{class:'pull'},F.gK);
     el('line',{x1:s[0],y1:s[1],x2:e[0],y2:e[1],stroke:'#111','stroke-width':14*u,'stroke-linecap':'round','marker-end':`url(#${F.id}pull)`},gp);
@@ -74,7 +83,7 @@ function setLook(F,mode,sel){
     s.setAttribute('fill-opacity',fo);s.setAttribute('stroke-opacity',so);s.setAttribute('stroke',byId[id].color)}
 }
 function drawLabels(F,ids){
-  F.gL.innerHTML='';
+  F.gL.innerHTML='';fitSvg(F.svg);
   const W=FIGS[F.fk].W;ids.filter(id=>F.shapes[id]).forEach(id=>{const m=byId[id];const t=el('text',{x:m.lp[0],y:m.lp[1],fill:m.color,class:'lbl','text-anchor':m.lp[0]>W*.6?'end':'start'},F.gL);t.textContent=m.ko});
 }
 function figNote(fk){const F=FIGS[fk];return `그림: ${F.alt.replace(' 그림','')} · ${F.dir}`}
@@ -94,6 +103,9 @@ let tn=0;tabs.forEach(b=>{const t=b.dataset.t;if(t==='home'||t==='flash')return;
 function go(t){if(!document.getElementById(t))t='home';
   tabs.forEach(b=>b.classList.toggle('on',b.dataset.t===t));document.querySelectorAll('main>section').forEach(s=>s.classList.toggle('on',s.id===t));
   window.scrollTo({top:0});store('dm_tab',t);
+  fitIn(document.getElementById(t));
+  if(t==='map'&&MF&&!showAll)selectM(cur,true);
+  if(t==='basic'&&typeof drawBasicPts==='function')drawBasicPts();
   if(t==='find'&&!findState.started)findStart(false);
   if(t==='quiz'&&!quizState.started)quizStart();
 }
@@ -109,6 +121,7 @@ $('#homeChips').innerHTML=M.map(m=>chipHTML(m,`data-go="${m.id}"`)).join('');
 $('#homeChips').onclick=e=>{const b=e.target.closest('[data-go]');if(!b)return;go('map');selectM(M.findIndex(m=>m.id===b.dataset.go))};
 
 // ---------- basic ----------
+let drawBasicPts=null;
 function basicLevel(){
   const B=L.basic;$('#basicL1').style.display='none';
   const fk=B.fig||L.figs[0];
@@ -117,10 +130,12 @@ function basicLevel(){
   h+=`</div><div><div class="card"><b>오늘의 핵심</b><ol class="keys">${B.keys.map(k=>`<li>${k}</li>`).join('')}</ol></div>
    <div class="card"><b>오늘 쓰는 동작 말</b><div class="glos" style="margin-top:10px">${B.words.map(w=>`<div><b>${w[0]}</b>${w[1]}</div>`).join('')}</div></div></div></div>`;
   $('#basicLv').innerHTML=h;
-  const F=buildFig($('#bFig'),fk);const u=F.u;
+  const F=buildFig($('#bFig'),fk);
+  drawBasicPts=()=>{F.gK.innerHTML='';const u=fitSvg(F.svg);
   B.pts.forEach(([x,y,t,pos])=>{const g=el('g',{class:'mk'},F.gK);el('circle',{cx:x,cy:y,r:14*u,fill:'#1d6fa5',stroke:'#fff','stroke-width':5*u},g);
     const right=x>FIGS[fk].W*.6,up=pos==='up';
-    const tx=el('text',{x:up?x:x+(right?-22*u:22*u),y:up?y-26*u:y+10*u,fill:'#1d6fa5','text-anchor':up?'start':(right?'end':'start')},g);tx.textContent=t});
+    const tx=el('text',{x:up?x:x+(right?-22*u:22*u),y:up?y-26*u:y+10*u,fill:'#1d6fa5','text-anchor':up?'start':(right?'end':'start')},g);tx.textContent=t})};
+  drawBasicPts();
   L.figs.filter(f=>f!==fk).forEach(f=>buildFig($('#bFig_'+f),f));
 }
 function basicMoves(){
@@ -143,7 +158,7 @@ else initBasicL1();
 function initBasicL1(){
   const F0=FIGS.dog,W=F0.W,H=F0.H;
   const host=$('#dirFig');
-  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`},host);
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,'data-w':W,'data-u':1},host);
   el('image',{href:F0.img,x:0,y:0,width:W,height:H,opacity:.55},svg);
   const defs=el('defs',{},svg);
   const mk=el('marker',{id:'dar',viewBox:'0 0 10 10',refX:5,refY:5,markerWidth:3,markerHeight:3,orient:'auto-start-reverse'},defs);
@@ -217,9 +232,9 @@ function ensureMF(fk){if(MF&&MF.fk===fk)return;MF=buildFig($('#mapFig'),fk);
 $('#mapAll').textContent=REVIEW?'이 그림 근육 모두':(L.figs.length>1?'이 그림 근육 모두':`${NM}개 한꺼번에`);
 $('#mapChips').innerHTML=REVIEW?LEVELS.filter(x=>x.M).map(x=>`<div class="chiprow"><span class="lvtag">레벨 ${x.n}</span>${x.M.map(m=>chipHTML(m,`data-k="${M.indexOf(m)}"`)).join('')}</div>`).join(''):M.map((m,k)=>chipHTML(m,`data-k="${k}"`)).join('');
 $('#mapChips').onclick=e=>{const b=e.target.closest('[data-k]');if(b)selectM(+b.dataset.k)};
-function selectM(k){
-  cur=(k+NM)%NM;showAll=false;const m=M[cur];visits[cur]++;$('#mapAll').classList.remove('on');
-  ensureMF(m.fig);setLook(MF,'focus',m.id);drawFibers(MF,m,pull);drawLabels(MF,names?Object.keys(MF.shapes):[m.id]);
+function selectM(k,redraw){
+  cur=(k+NM)%NM;showAll=false;const m=M[cur];if(!redraw)visits[cur]++;$('#mapAll').classList.remove('on');
+  ensureMF(m.fig);setLook(MF,'focus',m.id);drawFibers(MF,m,pull);drawLabels(MF,names?Object.keys(MF.shapes):[]);
   document.querySelectorAll('#mapChips .chip').forEach(c=>c.classList.toggle('on',+c.dataset.k===cur));
   $('#mapInfo').innerHTML=`${lvTag(m)}<h3 style="color:${m.color}">${m.ko}${m.med?` <small style="font-size:16px;color:var(--sub)">(${m.med})</small>`:''}</h3>
    <div class="en">${m.en}</div><div class="parts">${partsHTML(m)}</div>
@@ -232,7 +247,7 @@ $('#prevM').onclick=()=>selectM(cur-1);
 $('#nextM').onclick=()=>selectM(cur+1);
 $('#mapAll').onclick=()=>{showAll=!showAll;$('#mapAll').classList.toggle('on',showAll);if(showAll){setLook(MF,'all');drawFibers(MF,null);drawLabels(MF,Object.keys(MF.shapes));document.querySelectorAll('#mapChips .chip').forEach(c=>c.classList.remove('on'))}else selectM(cur)};
 $('#mapPull').onclick=()=>{pull=!pull;$('#mapPull').classList.toggle('on',pull);if(!showAll)selectM(cur)};
-$('#mapNames').onclick=()=>{names=!names;if(showAll)return;drawLabels(MF,names?Object.keys(MF.shapes):[M[cur].id])};
+$('#mapNames').onclick=()=>{names=!names;$('#mapNames').classList.toggle('on',names);if(showAll)return;drawLabels(MF,names?Object.keys(MF.shapes):[])};
 selectM(0);visits.fill(0);visits[0]=1;
 
 // ---------- body ----------
@@ -366,3 +381,6 @@ fBuild();
 
 // restore tab (레벨을 바꿨으면 첫 화면)
 if(!lvChanged){const t=store('dm_tab');if(t&&(TABNAMES[t]||t==='flash'))go(t)}
+
+// 화면 크기가 바뀌면 다시 맞춤
+let rzT=0;addEventListener('resize',()=>{clearTimeout(rzT);rzT=setTimeout(()=>{const s=document.querySelector('main>section.on');fitIn(s);if(s&&s.id==='map'&&!showAll)selectM(cur,true);if(s&&s.id==='basic'&&drawBasicPts)drawBasicPts()},200)});
