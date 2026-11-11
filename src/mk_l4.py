@@ -11,5 +11,6 @@ T=[
  dict(id='icost',ko='바깥갈비사이근',poly=[[90,620],[250,600],[330,640],[300,760],[260,880],[220,980],[120,1000],[90,900]],fa=[[120,640],[280,620]],fb=[[110,980],[230,960]],om=[200,630],im=[170,975],lp=[30,1060]),
  dict(id='recta',ko='배곧은근',poly=[[100,1172],[300,1178],[500,1188],[700,1198],[700,1240],[400,1242],[100,1242]],fa=[[690,1200],[690,1238]],fb=[[110,1176],[110,1238]],om=[650,1220],im=[150,1210],lp=[750,1150]),
 ]
+import os;os.chdir(os.path.dirname(os.path.abspath(__file__)))
 json.dump(H,open('head.json','w',encoding='utf-8'),ensure_ascii=False)
 json.dump(T,open('trunk.json','w',encoding='utf-8'),ensure_ascii=False)
